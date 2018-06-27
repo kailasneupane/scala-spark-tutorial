@@ -7,7 +7,7 @@ object AirportsByLatitudeSolution {
 
   def main(args: Array[String]) {
 
-    val conf = new SparkConf().setAppName("airports").setMaster("local[2]")
+    val conf = new SparkConf().setAppName("airports").setMaster("local[2]").set("spark.hadoop.validateOutputSpecs", "false")
     val sc = new SparkContext(conf)
 
     val airports = sc.textFile("in/airports.text")
