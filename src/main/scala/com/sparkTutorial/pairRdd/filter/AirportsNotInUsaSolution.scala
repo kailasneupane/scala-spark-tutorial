@@ -7,7 +7,8 @@ object AirportsNotInUsaSolution {
 
   def main(args: Array[String]) {
 
-    val conf = new SparkConf().setAppName("airports").setMaster("local")
+    val conf = new SparkConf().setAppName("airports").setMaster("local").set("spark.hadoop.validateOutputSpecs", "false")
+
     val sc = new SparkContext(conf)
 
     val airportsRDD = sc.textFile("in/airports.text")

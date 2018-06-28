@@ -1,5 +1,8 @@
 package com.sparkTutorial.pairRdd.filter
 
+import com.sparkTutorial.commons.AirportUtils
+import org.apache.spark.{SparkConf, SparkContext}
+
 object AirportsNotInUsaProblem {
 
   def main(args: Array[String]) {
@@ -18,5 +21,19 @@ object AirportsNotInUsaProblem {
        ("Wewak Intl", "Papua New Guinea")
        ...
      */
+
+    val conf = new SparkConf().setMaster("local[*]").setAppName("AirPorts Not in USA")
+      .set("spark.hadoop.validateOutputSpecs", "false")
+    val sc = new SparkContext(conf)
+
+    val path = "in/airports.text"
+
+    val airports = sc.textFile(path).mapPartitions(x => AirportUtils.parseEachLine(x))
+
+    val pair = airports.map(x => (x.name_of_airport, x.country_where_airport_is_located))
+      .filter(x => !x._2.equals("United States"))
+
+
+    pair.coalesce(1).saveAsTextFile("out/airports_not_in_usa_pair_rdd.text")
   }
 }
