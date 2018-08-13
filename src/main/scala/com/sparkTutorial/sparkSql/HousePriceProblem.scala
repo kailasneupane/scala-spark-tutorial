@@ -1,5 +1,7 @@
 package com.sparkTutorial.sparkSql
 
+import org.apache.spark.sql.SparkSession
+
 
 object HousePriceProblem {
 
@@ -37,4 +39,35 @@ object HousePriceProblem {
         |................|.................|
         |................|.................|
          */
+
+  val path = "in/RealEstate.csv"
+
+  val spark = SparkSession
+    .builder()
+    .appName("Spark SQL basic example")
+    .config("spark.master", "local[*]")
+    .getOrCreate()
+
+  def main(args: Array[String]): Unit = {
+
+
+    val df = spark
+      .read
+      //.option("sep", ",")
+      .option("inferSchema", true)
+      .option("header", true)
+      .csv(path)
+
+    val location = "Location"
+    val price = "Price SQ Ft"
+
+    df.show(4)
+
+    df.createOrReplaceTempView("re_table")
+
+    val sqlDF = spark.sql("select * from re_table limit 4")
+    sqlDF.show()
+
+  }
+
 }
